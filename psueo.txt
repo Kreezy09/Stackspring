@@ -1,0 +1,8 @@
+Create stack
+initialize pygame
+create dispenser(like rectangle. should be container)
+create circles to rep candy
+create spring or have spring icon
+candies should be put into stack
+candies should be visually inside the dispenser on top of a spring
+there should be buttons for pop,push operations
