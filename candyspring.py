@@ -45,6 +45,7 @@ is_empty_img = button.Button(50, 450, is_empty_Img)
 #drawnCandies = []
 
 dispenserStack = stack.ArrayStack() #create stack
+k = 0
 
 
 running = True #set running to true
@@ -55,7 +56,9 @@ while running: #while running is true
             running = False #set running to false
         elif pop_img.draw(screen): #if pop button is clicked
             try:
+                k-=1
                 dispenserStack.pop()
+                
                 # if len(drawnCandies) > 0:
                 #     drawnCandies.pop()
             except stack.Empty:
@@ -64,7 +67,8 @@ while running: #while running is true
              
         elif push_img.draw(screen):
             if len(dispenserStack) < 7:
-                dispenserStack.push(1)
+                k+=1
+                dispenserStack.push(k)
                 print(dispenserStack.is_empty())
                 # print(len(dispenserStack))
                 dispenserStack.print_stack()
@@ -106,7 +110,8 @@ while running: #while running is true
 
     resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
 
-    screen.blit(resized_spring, (280, 470 + height_difference)) #blit resized spring
+    # screen.blit(resized_spring, (280, 470 + height_difference)) #blit resized spring
+    screen.blit(resized_spring, (280, 470 )) #blit resized spring
 
     pop_img.draw(screen) #draw pop button
     push_img.draw(screen) #draw push button  
