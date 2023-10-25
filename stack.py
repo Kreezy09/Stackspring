@@ -35,6 +35,12 @@ class ArrayStack:
             raise Empty('Stack is empty') # remove last item from     list            
         return self._data.pop()
     
+    def print_stack(self):
+        print("Stack elements:")
+        for item in reversed(self._data):
+            print(item)
+
+    
 class Empty(Exception):
     """Error attempting to access an element from an empty container."""
     pass

@@ -42,7 +42,7 @@ top_img = button.Button(50, 250, top_Img)
 len_img = button.Button(50, 350, len_Img)
 is_empty_img = button.Button(50, 450, is_empty_Img)
 
-drawnCandies = []
+#drawnCandies = []
 
 dispenserStack = stack.ArrayStack() #create stack
 
@@ -56,8 +56,8 @@ while running: #while running is true
         elif pop_img.draw(screen): #if pop button is clicked
             try:
                 dispenserStack.pop()
-                if len(drawnCandies) > 0:
-                    drawnCandies.pop()
+                # if len(drawnCandies) > 0:
+                #     drawnCandies.pop()
             except stack.Empty:
                 print("Dispenser is empty")
           
@@ -66,7 +66,8 @@ while running: #while running is true
             if len(dispenserStack) < 7:
                 dispenserStack.push(1)
                 print(dispenserStack.is_empty())
-                print(len(dispenserStack))
+                # print(len(dispenserStack))
+                dispenserStack.print_stack()
             else:
                 print("Dispenser is full")
                 
@@ -99,7 +100,7 @@ while running: #while running is true
     spring_min_height = 50  # Adjust this value according to your minimum spring height
     spring_max_height = 150  # Adjust this value according to your maximum spring height
 
-    new_springHeight = max(spring_min_height, spring_max_height + num_candies * 10)
+    new_springHeight = max(spring_min_height, spring_max_height - num_candies * 10)
     # print(new_springHeight)
     height_difference = new_springHeight - spring_max_height
 
@@ -128,7 +129,7 @@ while running: #while running is true
         y = CANDY_CENTRE[1] + candy_spacing_y * row
         centre_of_candy = (x, y)
         pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
-        drawnCandies.append(centre_of_candy)
+        #drawnCandies.append(centre_of_candy)
 
     
     stretch_factor += 0.01 * animation_speed #increase stretch factor  
