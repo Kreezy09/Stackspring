@@ -91,10 +91,10 @@ while running: #while running is true
     pygame.draw.rect(screen, (255, 255, 255), rect_1) #draw rectangle
     
     stretched_height = int(springHeight * stretch_factor) #stretched height
-    stetched_width = springWidth
+    stetched_width = new_springWidth
     new_springIcon = pygame.transform.scale(spring, (stetched_width, stretched_height)) #new spring icon
     
-    # screen.blit(new_springIcon, (147, rect_1.y + rect_1.height - stretched_height)) #blit spring icon
+    # screen.blit(new_springIcon, (280, rect_1.y + rect_1.height - stretched_height)) #blit spring icon
     num_candies = len(dispenserStack._data)
     num_rows = 3
     num_columns = 3
@@ -110,8 +110,8 @@ while running: #while running is true
 
     resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
 
-    # screen.blit(resized_spring, (280, 470 + height_difference)) #blit resized spring
-    screen.blit(resized_spring, (280, 470 )) #blit resized spring
+    screen.blit(resized_spring, (280, 470 + num_candies*10)) #blit resized spring
+    # screen.blit(new_springIcon, (280, 470 )) #blit resized spring
 
     pop_img.draw(screen) #draw pop button
     push_img.draw(screen) #draw push button  
@@ -119,12 +119,6 @@ while running: #while running is true
     len_img.draw(screen) #draw len button
     is_empty_img.draw(screen) #draw is empty button
     
-
-    # for i in range(len(dispenserStack._data)):
-    #     centreOfCandy = (CANDY_CENTRE[0] + 61 * i, CANDY_CENTRE[1])
-    #     pygame.draw.circle(screen, CANDY_COLOR, centreOfCandy, CANDY_RADIUS)
-    #     drawnCandies.append(centreOfCandy)
-
 
     for i in range(num_candies):
         row = i // num_columns
