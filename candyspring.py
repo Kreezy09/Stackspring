@@ -5,7 +5,7 @@ pygame.init() #initialize pygame
 WIDTH, HEIGHT = 800, 600 #set width and height
 WHITE = (255, 255, 255)
 CANDY_COLOR = (255, 0, 0) 
-CANDY_CENTRE = (330, 395)  # Center coordinates
+CANDY_CENTRE = (410, 335)  # Center coordinates
 CANDY_RADIUS = 30  # Radius of the circle
 
 #create screen 
@@ -13,21 +13,16 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 #title
 pygame.display.set_caption("Candy Dispenser")
 
-rect_1 = pygame.Rect(300, 200, 220, 600) #create rectangle
+rect_1 = pygame.Rect(365, 200, 220, 600) #create rectangle
 
 spring = pygame.image.load("spring.png") #load spring image
 springWidth, springHeight = spring.get_size() #get size of spring
 
-animation_speed = 2 #animation speed
-max_strecth = 1 #max stretch
-min_stretch = 0.5 #min stretch
 
-scale_factor = 0.5 #scale factor
+
+scale_factor = 0.75 #scale factor
 
 new_springWidth = int(springWidth * scale_factor) #new spring width
-# new_springHeight = int(springHeight * scale_factor) #new spring height
-
-# resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
 
 pop_Img = pygame.image.load("button_pop.png").convert_alpha() #load pop image
 push_Img = pygame.image.load("button_push.png").convert_alpha() #load push image
@@ -42,31 +37,48 @@ top_img = button.Button(50, 250, top_Img)
 len_img = button.Button(50, 350, len_Img)
 is_empty_img = button.Button(50, 450, is_empty_Img)
 
-#drawnCandies = []
 
 dispenserStack = stack.ArrayStack() #create stack
 k = 0
+candy_names = ["Candy 1", "Candy 2", "Candy 3", "Candy 4", "Candy 5", "Candy 6", "Candy 7", "Candy 8", "Candy 9", "Candy 10", "Candy 11", "Candy 12", "Candy 13", "Candy 14"]
 
 
 running = True #set running to true
-stretch_factor = min_stretch #set stretch factor to min stretch
 while running: #while running is true
     for event in pygame.event.get(): #for all events
         if event.type == pygame.QUIT: #if the event is quit
             running = False #set running to false
         elif pop_img.draw(screen): #if pop button is clicked
             try:
-                k-=1
-                dispenserStack.pop()
-                
-                # if len(drawnCandies) > 0:
-                #     drawnCandies.pop()
+                popped_candy_number = dispenserStack.pop()
+                popped_candy_name = candy_names[popped_candy_number - 1]  # Get the name of the popped candy
+                print("Popped candy name:", popped_candy_name)
+                k -= 1
+
+                # Draw a message box with the popped candy's name
+                message_font = pygame.font.Font(None, 36)
+                message_text = message_font.render("Popped Candy: " + popped_candy_name, True, (0, 0, 0))
+                message_rect = message_text.get_rect(center=(600, 150))
+                pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
+                screen.blit(message_text, message_rect.topleft)
+
+                pygame.display.flip()
+                pygame.time.delay(1000)  # Display the message box for 2 seconds (2000 milliseconds)
+
+                # Clear the message box by redrawing the background
+                screen.fill((0, 0, 255))
+                # try:
+                #     k-=1
+                #     dispenserStack.pop()
+                    
+                #     # if len(drawnCandies) > 0:
+                #     #     drawnCandies.pop()
             except stack.Empty:
                 print("Dispenser is empty")
           
              
         elif push_img.draw(screen):
-            if len(dispenserStack) < 7:
+            if len(dispenserStack) < 14:
                 k+=1
                 dispenserStack.push(k)
                 print(dispenserStack.is_empty())
@@ -85,33 +97,46 @@ while running: #while running is true
             print(len(dispenserStack))
         
         elif is_empty_img.draw(screen):
-            print(dispenserStack.is_empty())
+            empty = str(dispenserStack.is_empty())
+            print("Is empty?", empty)
+            
+            # Draw a message box showing whether empty is true or false
+            message_font = pygame.font.Font(None, 36)
+            message_text = message_font.render("Is Dispensor Empty? "+ empty, True, (0, 0, 0))
+            message_rect = message_text.get_rect(center=(600, 150))
+            pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
+            screen.blit(message_text, message_rect.topleft)
+
+            pygame.display.flip()
+            pygame.time.delay(1000)  # Display the message box for 1 second
+            
+    num_candies = len(dispenserStack._data)
                     
     screen.fill((0, 0, 255))
     pygame.draw.rect(screen, (255, 255, 255), rect_1) #draw rectangle
+    y = 360 + num_candies*10
+    pygame.draw.line(screen, (0, 0, 0), (365, y), (585, y), 10)
+    pygame.draw.line(screen, (0, 0, 0), (365, 200), (365, 800), 10)
+    pygame.draw.line(screen, (0, 0, 0), (585, 200), (585, 800), 10)
+
+
     
-    stretched_height = int(springHeight * stretch_factor) #stretched height
-    stetched_width = new_springWidth
-    new_springIcon = pygame.transform.scale(spring, (stetched_width, stretched_height)) #new spring icon
     
-    # screen.blit(new_springIcon, (280, rect_1.y + rect_1.height - stretched_height)) #blit spring icon
-    num_candies = len(dispenserStack._data)
+    
     num_rows = 3
     num_columns = 3
     candy_spacing_x = 61  # Adjust this value according to your spacing preference
     candy_spacing_y = 61  # Adjust this value according to your spacing preference
     
     spring_min_height = 50  # Adjust this value according to your minimum spring height
-    spring_max_height = 150  # Adjust this value according to your maximum spring height
+    spring_max_height = 300  # Adjust this value according to your maximum spring height
 
     new_springHeight = max(spring_min_height, spring_max_height - num_candies * 10)
-    # print(new_springHeight)
     height_difference = new_springHeight - spring_max_height
 
     resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
 
-    screen.blit(resized_spring, (280, 470 + num_candies*10)) #blit resized spring
-    # screen.blit(new_springIcon, (280, 470 )) #blit resized spring
+    screen.blit(resized_spring, (280, 332 + num_candies*10)) #blit resized spring
 
     pop_img.draw(screen) #draw pop button
     push_img.draw(screen) #draw push button  
@@ -120,35 +145,26 @@ while running: #while running is true
     is_empty_img.draw(screen) #draw is empty button
     
 
+
     for i in range(num_candies):
         row = i // num_columns
         column = i % num_columns
         # print('rox', row, 'col', column)
         x = CANDY_CENTRE[0] + candy_spacing_x * column
-        y = CANDY_CENTRE[1] + candy_spacing_y * row
+        y = CANDY_CENTRE[1] - candy_spacing_y * row + num_candies*10
         centre_of_candy = (x, y)
+        candy_number = dispenserStack._data[i]  # Get the candy number from the stack
+        candy_name = candy_names[candy_number - 1]  # Index the candy_names list (subtract 1 because list is 0-based)
         pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
-        #drawnCandies.append(centre_of_candy)
+        font = pygame.font.Font(None, 16)
+        text = font.render(candy_name, True, (0, 0, 0))
+        text_rect = text.get_rect(center=centre_of_candy)  # Position the text below the candy
+        screen.blit(text, text_rect)
 
-    
-    stretch_factor += 0.01 * animation_speed #increase stretch factor  
-    if stretch_factor > max_strecth or stretch_factor < min_stretch:
-        animation_speed *= -1 #reverse animation speed
 
         
     pygame.display.update() #update screen
     pygame.time.delay(25)
 pygame.quit() #quit pygame 
 
-    # for i in range(len(dispenserStack._data)):
-    #     interim_x = 330
-    #     interim_y = 395
-    #     if  interim_x + 70 * i < 550:
-    #         centreOfCandy = (330 + 70 * i, interim_y)
-    #         pygame.draw.circle(screen, CANDY_COLOR, centreOfCandy, CANDY_RADIUS)
-    #         drawnCandies.append(centreOfCandy)
-    #     else:
-    #         centreOfCandy = (interim_x, interim_y + 70 * i)
-    #         pygame.draw.circle(screen, CANDY_COLOR, centreOfCandy, CANDY_RADIUS)
-    #         drawnCandies.append(centreOfCandy)
     
