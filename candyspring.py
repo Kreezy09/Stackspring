@@ -13,7 +13,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 #title
 pygame.display.set_caption("Candy Dispenser")
 
-rect_1 = pygame.Rect(365, 200, 220, 600) #create rectangle
+rect_1 = pygame.Rect(365, 182, 220, 600) #create rectangle
 
 spring = pygame.image.load("spring.png") #load spring image
 springWidth, springHeight = spring.get_size() #get size of spring
@@ -53,21 +53,25 @@ while running: #while running is true
         elif pop_img.draw(screen): #if pop button is clicked
             try:
                 popped_candy_number = dispenserStack.pop()
+                print("Popped cundy no: ", popped_candy_number)
                 popped_candy_name = candy_names[popped_candy_number - 1]  # Get the name of the popped candy
                 print("Popped candy name:", popped_candy_name)
                 
                 candy_names.pop()
                 k -= 1
+                # pygame.draw.line(screen, (255, 255, 255), (371, 176), (580, 176), 10) #590
+                # pygame.draw.line(screen, (0, 0, 0), (362, 170), (580, 50), 10) 
+
 
                 # Draw a message box with the popped candy's name
                 message_font = pygame.font.Font(None, 36)
                 message_text = message_font.render("Popped Candy: " + popped_candy_name, True, (0, 0, 0))
                 message_rect = message_text.get_rect(center=(600, 150))
-                pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
+                # pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
                 screen.blit(message_text, message_rect.topleft)
 
                 pygame.display.flip()
-                pygame.time.delay(1000)  # Display the message box for 2 seconds (2000 milliseconds)
+                pygame.time.delay(500)  # Display the message box for 2 seconds (2000 milliseconds)
 
                 # Clear the message box by redrawing the background
                 screen.fill((0, 0, 255))
@@ -76,9 +80,9 @@ while running: #while running is true
                 print("Dispenser is empty")
                 # Draw a message box
                 message_font = pygame.font.Font(None, 36)
-                message_text = message_font.render("Dispensor empty", True, (0, 0, 0))
+                message_text = message_font.render("Dispensor empty", True, (255, 0, 0))
                 message_rect = message_text.get_rect(center=(600, 150))
-                pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
+                pygame.draw.rect(screen, (0, 0, 0), message_rect)  # Draw a white background for the message box
                 screen.blit(message_text, message_rect.topleft)
 
                 pygame.display.flip()
@@ -90,15 +94,33 @@ while running: #while running is true
              
         elif push_img.draw(screen):
             if len(dispenserStack) < 15:
+                # pygame.draw.line(screen, (255, 255, 255), (371, 176), (580, 176), 10) #590
+                # pygame.draw.line(screen, (0, 0, 0), (362, 170), (580, 50), 10) 
                 k+=1
                 candyName = f'Candy {k}'
                 candy_names.append(candyName)
                 dispenserStack.push(k)
+
+
                 print(dispenserStack.is_empty())
                 # print(len(dispenserStack))
                 dispenserStack.print_stack()
+                # pygame.display.flip()
+                # pygame.time.delay(500)
             else:
                 print("Dispenser is full")
+                # Draw a message box
+                message_font = pygame.font.Font(None, 36)
+                message_text = message_font.render("Dispenser is full", True, (0, 0, 0))
+                message_rect = message_text.get_rect(center=(600, 150))
+                pygame.draw.rect(screen, (255, 255, 255), message_rect)  # Draw a white background for the message box
+                screen.blit(message_text, message_rect.topleft)
+
+                pygame.display.flip()
+                pygame.time.delay(500)  # Display the message box for 1 seconds (1000 milliseconds)
+
+                # Clear the message box by redrawing the background
+                screen.fill((0, 0, 255))
                 
         elif top_img.draw(screen):
             try:
@@ -173,8 +195,10 @@ while running: #while running is true
     pygame.draw.rect(screen, (255, 255, 255), rect_1) #draw rectangle
     y = 360 + num_candies*10
     pygame.draw.line(screen, (0, 0, 0), (365, y), (585, y), 10)
-    pygame.draw.line(screen, (0, 0, 0), (365, 200), (365, 800), 10)
-    pygame.draw.line(screen, (0, 0, 0), (585, 200), (585, 800), 10)
+    pygame.draw.line(screen, (0, 0, 0), (365, 172), (365, 800), 10)
+    pygame.draw.line(screen, (0, 0, 0), (585, 172), (585, 800), 10)
+    pygame.draw.line(screen, (0, 0, 0), (365, 176), (585, 176), 10)
+
 
 
     
