@@ -20,6 +20,7 @@ rect_1 = pygame.Rect(365, 182, 220, 600) #create rectangle
 #load spring
 spring = pygame.image.load("spring.png") #load spring image
 springWidth, springHeight = spring.get_size() #get size of spring
+newspringheight = 300
 
 #load buttons' images
 pop_Img = pygame.image.load("button_pop.png").convert_alpha() #load pop image
@@ -38,6 +39,7 @@ is_empty_img = button.Button(50, 450, is_empty_Img)
 #create stack
 dispenserStack = stack.ArrayStack() 
 
+falling = False
 k = 0
 candy_names = []
 
@@ -120,14 +122,16 @@ while running: #while running is true
                 x = CANDY_CENTRE[0] + candy_spacing_x * column
                 xArr.append(x)
                 print("xArr: ", xArr)
-                y = CANDY_CENTRE[1] - candy_spacing_y * row 
-                yArr.append(y)
+                y = CANDY_CENTRE[1] - candy_spacing_y * row + 10 * k
+                falling = True
+                initY = -50
+                yArr.append(initY)
                 print("yArr: ", yArr)
                 centre_of_candy = (x, y) 
                 k+=1
+                newspringheight -= 10
                 for i in range (len(xArr)):
-                    yArr[i] += num_candies * 10
-                    
+                    yArr[i] += 10
                 pygame.display.flip()
                 pygame.time.delay(500)
             else:
@@ -211,10 +215,10 @@ while running: #while running is true
 
     #Spring height and width manipulation
     spring_max_height = 300  # Adjust this value according to your maximum spring height
-    new_springHeight = spring_max_height - num_candies * 10
+    # new_springHeight = spring_max_height - num_candies * 10
     scale_factor = 0.75 #scale factor
     new_springWidth = int(springWidth * scale_factor) #new spring width
-    resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
+    resized_spring = pygame.transform.scale(spring, (new_springWidth, newspringheight)) #resize spring
     screen.blit(resized_spring, (280, 332 + num_candies*10)) #blit resized spring
     
     #Candy coordinate logic
@@ -226,6 +230,22 @@ while running: #while running is true
         text = font.render(candy_name, True, (0, 0, 0))
         text_rect = text.get_rect(center=(xArr[i], yArr[i]))  # Position the text below the candy
         screen.blit(text, text_rect)
+
+    #falling functionality 
+    if falling:
+        if yArr[-1]< y:
+            yArr[-1] += 1
+            for i in range (len(xArr)):
+                yArr[-1] += 1
+            pygame.display.flip()
+            pygame.time.delay(25)
+        else:
+            falling = False
+            pygame.display.flip()
+            pygame.time.delay(25)
+
+
+                  
 
         
     pygame.display.update() #update screen
