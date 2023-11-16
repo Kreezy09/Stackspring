@@ -40,6 +40,11 @@ dispenserStack = stack.ArrayStack()
 
 k = 0
 candy_names = []
+
+xArr =[]
+yArr = []
+circleArr = []
+#set fonts
 font = pygame.font.Font(None, 16)
 message_font = pygame.font.Font(None, 36)
 
@@ -82,12 +87,47 @@ while running: #while running is true
         elif push_img.draw(screen):
             if len(dispenserStack) < 15:
 
-                k+=1
+                
                 candyName = f'Candy {k}'
                 candy_names.append(candyName)
                 dispenserStack.push(k)
                 pygame.draw.line(screen, (255, 255, 255), (371, 176), (580, 176), 10) #590
                 pygame.draw.line(screen, (0, 0, 0), (362, 170), (580, 50), 10) 
+                
+                # #Candy coordinate logic
+                # num_columns = 3
+                # candy_spacing_x = 61  # Adjust this value according to your spacing preference
+                # candy_spacing_y = 61  # Adjust this value according to your spacing preference
+                # for i in range(num_candies):
+                #     row = i // num_columns
+                #     column = i % num_columns
+                #     x = CANDY_CENTRE[0] + candy_spacing_x * column
+                #     xArr.append(x)
+                #     y = CANDY_CENTRE[1] - candy_spacing_y * row + num_candies*10
+                #     yArr.append(y)
+                #     centre_of_candy = (xArr[i], yArr[i]) 
+                #     candy_name = candy_names[i]
+                #     print("candy name: ", candy_name)
+                #     pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
+                #     text = font.render(candy_name, True, (0, 0, 0))
+                #     text_rect = text.get_rect(center=centre_of_candy)  # Position the text below the candy
+                #     screen.blit(text, text_rect)
+                num_columns = 3
+                candy_spacing_x = 61  # Adjust this value according to your spacing preference
+                candy_spacing_y = 61  # Adjust this value according to your spacing preference
+                row = k // num_columns
+                column = k % num_columns
+                x = CANDY_CENTRE[0] + candy_spacing_x * column
+                xArr.append(x)
+                print("xArr: ", xArr)
+                y = CANDY_CENTRE[1] - candy_spacing_y * row 
+                yArr.append(y)
+                print("yArr: ", yArr)
+                centre_of_candy = (x, y) 
+                k+=1
+                for i in range (len(xArr)):
+                    yArr[i] += num_candies * 10
+                    
                 pygame.display.flip()
                 pygame.time.delay(500)
             else:
@@ -150,7 +190,7 @@ while running: #while running is true
             pygame.display.flip()
             pygame.time.delay(1000)  
             
-    num_candies = len(dispenserStack._data)
+    num_candies = len(dispenserStack)
                     
     screen.fill((0, 0, 255))
     
@@ -178,20 +218,13 @@ while running: #while running is true
     screen.blit(resized_spring, (280, 332 + num_candies*10)) #blit resized spring
     
     #Candy coordinate logic
-    num_columns = 3
-    candy_spacing_x = 61  # Adjust this value according to your spacing preference
-    candy_spacing_y = 61  # Adjust this value according to your spacing preference
+
     for i in range(num_candies):
-        row = i // num_columns
-        column = i % num_columns
-        x = CANDY_CENTRE[0] + candy_spacing_x * column
-        y = CANDY_CENTRE[1] - candy_spacing_y * row + num_candies*10
-        centre_of_candy = (x, y) 
         candy_name = candy_names[i]
-        print("candy name: ", candy_name)
-        pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
+        # print("candy name: ", candy_name)
+        pygame.draw.circle(screen, CANDY_COLOR, (xArr[i], yArr[i]), CANDY_RADIUS)
         text = font.render(candy_name, True, (0, 0, 0))
-        text_rect = text.get_rect(center=centre_of_candy)  # Position the text below the candy
+        text_rect = text.get_rect(center=(xArr[i], yArr[i]))  # Position the text below the candy
         screen.blit(text, text_rect)
 
         
