@@ -1,4 +1,4 @@
-import pygame, button, stack
+import pygame, Stackspring.button as button, Stackspring.stack as stack
 
 pygame.init() #initialize pygame
 
@@ -40,6 +40,8 @@ dispenserStack = stack.ArrayStack()
 
 k = 0
 candy_names = []
+
+#Fonts
 font = pygame.font.Font(None, 16)
 message_font = pygame.font.Font(None, 36)
 
@@ -188,7 +190,7 @@ while running: #while running is true
         y = CANDY_CENTRE[1] - candy_spacing_y * row + num_candies*10
         centre_of_candy = (x, y) 
         candy_name = candy_names[i]
-        print("candy name: ", candy_name)
+        # print("candy name: ", candy_name)
         pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
         text = font.render(candy_name, True, (0, 0, 0))
         text_rect = text.get_rect(center=centre_of_candy)  # Position the text below the candy
