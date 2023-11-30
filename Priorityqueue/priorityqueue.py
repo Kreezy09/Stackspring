@@ -233,6 +233,19 @@ class SortedPriorityQueue(PriorityQueueBase):
         item = self._data.delete(self._data.first())
         return (item._key, item._value)
     
+    def remove(self, priority, name):
+        """Remove a patient with the specified priority and name."""
+        walk = self._data.first()
+        while walk is not None:
+            item = walk.element()
+            if item._key == priority and item._value == name:
+                self._data.delete(walk)
+                return
+            walk = self._data.after(walk)
+
+        raise ValueError(f"Patient with priority {priority} and name {name} not found.")
+
+    
     def __iter__(self):
         """Generate a forward iteration of the elements in sorted order."""
         for item in self._data:

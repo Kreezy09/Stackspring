@@ -1,4 +1,6 @@
-import pygame, priorityqueue as pq, button as b
+import pygame
+import priorityqueue as pq
+import button as b
 
 pygame.init()  # initialize pygame
 
@@ -12,17 +14,18 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Hospital")
 
 # load reception
-reception = pygame.image.load("receptionist.png")  # load spring image
+reception = pygame.image.load("receptionist.png")  # load reception image
 receptionWidth, receptionHeight = reception.get_size()  # get size of reception
 
-# load people
+# load smaller people image
 person = pygame.image.load("people.png")
+person = pygame.transform.scale(person, (200, 200))  # resize the people image
 
 # load buttons' images
-addimg = pygame.image.load("button_add-patient.png").convert_alpha()  # load pop image
-removeminImg = pygame.image.load("button_remove-min.png").convert_alpha()  # load push image
-removeanyImg = pygame.image.load("button_remove-any.png").convert_alpha()  # load top image
-len_Img = pygame.image.load("button_length.png").convert_alpha()  # load len image
+addimg = pygame.image.load("button_add-patient.png").convert_alpha()  # load add image
+removeminImg = pygame.image.load("button_remove-min.png").convert_alpha()  # load remove min image
+removeanyImg = pygame.image.load("button_remove-any.png").convert_alpha()  # load remove any image
+len_Img = pygame.image.load("button_length.png").convert_alpha()  # load length image
 is_empty_Img = pygame.image.load("button_is-empty.png").convert_alpha()  # load is empty image
 
 # create button instances
@@ -64,6 +67,7 @@ while running:  # while running is true
                     patient_name = nameVal
                     priority_queue.add(patient_age, patient_name)
                     patients.append((patient_name, patient_age))
+                    patients.sort(key=lambda x: x[1], reverse=True)  # sort patients by priority
                     print(f"Added patient: {patient_name} with age {patient_age}")
                     nameVal = ""
                     keyVal = ""
@@ -74,13 +78,25 @@ while running:  # while running is true
                 try:
                     removed_patient = priority_queue.remove_min()
                     print(f"Removed patient with min priority: {removed_patient}")
+                    # Remove the patient visually
+                    if patients:
+                        patients = sorted(patients, key=lambda x: x[1], reverse=True)
+                        patients.pop()
                 except pq.Empty as e:
                     print(e)
 
             if removeany.draw(screen):
                 if patients:
-                    removed_patient = patients.pop()
-                    print(f"Removed patient: {removed_patient}")
+                    # Remove the specified patient visually and from the queue
+                    try:
+                        removed_patient_name = nameVal
+                        removed_patient_priority = int(keyVal)
+                        removed_patient = (removed_patient_name, removed_patient_priority)
+                        patients = [patient for patient in patients if patient != removed_patient]
+                        print(f"Removed patient: {removed_patient}")
+                        priority_queue.remove(removed_patient_priority, removed_patient_name)
+                    except ValueError:
+                        print("Invalid input. Please enter a valid name and priority.")
                 else:
                     print("No patients to remove.")
 
@@ -142,9 +158,9 @@ while running:  # while running is true
 
     # Draw patients
     for i, patient in enumerate(patients):
-        screen.blit(person, (200 + i * 100, 370))
+        screen.blit(person, (200 + i * 100, 400))  # increased spacing
         patient_text = message_font.render(f"{patient[0]} - {patient[1]}", True, (0, 0, 0))
-        screen.blit(patient_text, (200 + i * 50, 330))
+        screen.blit(patient_text, (270 + i * 100, 350))  # increased spacing
 
     # Draw buttons
     add_button.draw(screen)
