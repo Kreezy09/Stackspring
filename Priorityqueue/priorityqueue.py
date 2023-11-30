@@ -1,5 +1,3 @@
-from abc import ABC, abstractmethod
-
 class _DoublyLinkedBase:
     """A base class providing a doubly linked list representation."""
     
@@ -235,37 +233,58 @@ class SortedPriorityQueue(PriorityQueueBase):
         item = self._data.delete(self._data.first())
         return (item._key, item._value)
     
+    def __iter__(self):
+        """Generate a forward iteration of the elements in sorted order."""
+        for item in self._data:
+            yield (item._key, item._value)
+        
 class Empty(Exception):
     """Error attempting to access an element from an empty container."""
     pass
 
 # Create a SortedPriorityQueue
-sorted_pq = SortedPriorityQueue()
+# test_priority_queue.py
 
-# Add elements with associated keys
-sorted_pq.add(3, 'C')
-sorted_pq.add(1, 'A')
-sorted_pq.add(2, 'B')
+# Create a SortedPriorityQueue
+# sorted_pq = SortedPriorityQueue()
 
-# Test min() method
-min_element = sorted_pq.min()
-print(f"Minimum element: {min_element}")
+# # Get input for key-value pairs
+# num_elements = int(input("Enter the number of elements: "))
 
-# Test remove_min() method
-removed_element = sorted_pq.remove_min()
-print(f"Removed minimum element: {removed_element}")
+# for _ in range(num_elements):
+#     key = int(input("Enter the priority (an integer): "))
+#     value = input("Enter the value: ")
+#     sorted_pq.add(key, value)
 
-# Test if the priority queue is empty
-print(f"Is the priority queue empty? {sorted_pq.is_empty()}")
+# # Test min() method
+# try:
+#     min_element = sorted_pq.min()
+#     print(f"Minimum element: {min_element}")
+# except Empty as e:
+#     print(f"Error: {e}")
 
-# Add more elements
-sorted_pq.add(5, 'E')
-sorted_pq.add(4, 'D')
+# # Test remove_min() method
+# try:
+#     removed_element = sorted_pq.remove_min()
+#     print(f"Removed minimum element: {removed_element}")
+# except Empty as e:
+#     print(f"Error: {e}")
 
-# Test iteration through the priority queue
-print("Elements in sorted order:")
-for key, value in sorted_pq:
-    print(f"{key}: {value}")
+# # Test if the priority queue is empty
+# print(f"Is the priority queue empty? {sorted_pq.is_empty()}")
 
-# Test if the priority queue is empty again
-print(f"Is the priority queue empty now? {sorted_pq.is_empty()}")
+# # Add more elements
+# num_additional_elements = int(input("Enter the number of additional elements: "))
+
+# for _ in range(num_additional_elements):
+#     key = int(input("Enter the priority (an integer): "))
+#     value = input("Enter the value: ")
+#     sorted_pq.add(key, value)
+
+# # Test iteration through the priority queue
+# print("Elements in sorted order:")
+# for key, value in sorted_pq:
+#     print(f"{key}: {value}")
+
+# # Test if the priority queue is empty again
+# print(f"Is the priority queue empty now? {sorted_pq.is_empty()}")

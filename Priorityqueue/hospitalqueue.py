@@ -1,204 +1,159 @@
-import pygame, Stackspring.button as button, Stackspring.stack as stack
+import pygame, priorityqueue as pq, button as b
 
-pygame.init() #initialize pygame
+pygame.init()  # initialize pygame
 
-#constants
-WIDTH, HEIGHT = 800, 600 #set width and height
-WHITE = (255, 255, 255)
-CANDY_COLOR = (255, 0, 0) 
-CANDY_CENTRE = (410, 327)  # Center coordinates
-CANDY_RADIUS = 30  # Radius of the circle
+# constants
+WIDTH, HEIGHT = 800, 600  # set width and height
 
-#create screen 
-screen = pygame.display.set_mode((WIDTH, HEIGHT)) 
+# create screen
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-#title
+# title
 pygame.display.set_caption("Hospital")
 
-rect_1 = pygame.Rect(365, 182, 220, 600) #create rectangle
+# load reception
+reception = pygame.image.load("receptionist.png")  # load spring image
+receptionWidth, receptionHeight = reception.get_size()  # get size of reception
 
-#load spring
-spring = pygame.image.load("spring.png") #load spring image
-springWidth, springHeight = spring.get_size() #get size of spring
+# load people
+person = pygame.image.load("people.png")
 
-#load buttons' images
-pop_Img = pygame.image.load("button_pop.png").convert_alpha() #load pop image
-push_Img = pygame.image.load("button_push.png").convert_alpha() #load push image
-top_Img = pygame.image.load("button_top.png").convert_alpha() #load top image
-len_Img = pygame.image.load("button_length.png").convert_alpha() #load len image
-is_empty_Img = pygame.image.load("button_is-empty.png").convert_alpha() #load is empty image
-        
-#create button instances
-pop_img = button.Button(50, 50, pop_Img)
-push_img = button.Button(50, 150, push_Img)
-top_img = button.Button(50, 250, top_Img)
-len_img = button.Button(50, 350, len_Img)
-is_empty_img = button.Button(50, 450, is_empty_Img)
+# load buttons' images
+addimg = pygame.image.load("button_add-patient.png").convert_alpha()  # load pop image
+removeminImg = pygame.image.load("button_remove-min.png").convert_alpha()  # load push image
+removeanyImg = pygame.image.load("button_remove-any.png").convert_alpha()  # load top image
+len_Img = pygame.image.load("button_length.png").convert_alpha()  # load len image
+is_empty_Img = pygame.image.load("button_is-empty.png").convert_alpha()  # load is empty image
 
-#create stack
-dispenserStack = stack.ArrayStack() 
+# create button instances
+add_button = b.Button(300, 50, addimg)
+removemin = b.Button(550, 50, removeminImg)
+removeany = b.Button(300, 130, removeanyImg)
+len_ = b.Button(556, 130, len_Img)
+is_empty = b.Button(500, 210, is_empty_Img)
 
-k = 0
-candy_names = []
+# create queue
+priority_queue = pq.SortedPriorityQueue()
 
-#Fonts
-font = pygame.font.Font(None, 16)
+# Fonts
+font = pygame.font.Font(None, 32)
 message_font = pygame.font.Font(None, 36)
 
-running = True #set running to true
-while running: #while running is true
-    for event in pygame.event.get(): #for all events
-        if event.type == pygame.QUIT: #if the event is quit
-            running = False #set running to false
-        elif pop_img.draw(screen): #if pop button is clicked
-            try:
-                popped_candy_number = dispenserStack.pop()
-                print("Popped candy no: ", popped_candy_number)
-                popped_candy_name = candy_names[popped_candy_number - 1]  # Get the name of the popped candy
-                print("Popped candy name:", popped_candy_name)
-                
-                candy_names.pop()
-                k -= 1
-                pygame.draw.line(screen, (255, 255, 255), (371, 176), (580, 176), 10) #590
-                pygame.draw.line(screen, (0, 0, 0), (362, 170), (580, 50), 10) 
+nameVal = ""
+keyVal = ""
+nameRectActive = False
+keyRectActive = False
+nameState = False
+keyState = False
 
+patients = []  # to store patient data
 
-                # Draw a message box with the popped candy's name
-                message_text = message_font.render("Popped Candy: " + popped_candy_name, True, (0, 0, 0))
-                message_rect = message_text.get_rect(center=(600, 150))
-                screen.blit(message_text, message_rect.topleft)
+running = True  # set running to true
+while running:  # while running is true
+    for event in pygame.event.get():  # for all events
+        if event.type == pygame.QUIT:  # if the event is quit
+            running = False  # set running to false
 
-                pygame.display.flip()
-                pygame.time.delay(500)  # Display the message box for 2 seconds (2000 milliseconds)
-                    
-            except stack.Empty:
-                print("Dispenser is empty")
-                # Display message
-                message_text = message_font.render("Dispensor empty!!!", True, (255, 0, 0))
-                message_rect = message_text.get_rect(center=(600, 150))
-                screen.blit(message_text, message_rect.topleft)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            nameRectActive = input_rect_name.collidepoint(event.pos)
+            keyRectActive = input_rect_key.collidepoint(event.pos)
 
-                pygame.display.flip()
-                pygame.time.delay(500)  # Display the message for 1/2 a second         
-             
-        elif push_img.draw(screen):
-            if len(dispenserStack) < 15:
+            if add_button.draw(screen):
+                try:
+                    patient_age = int(keyVal)
+                    patient_name = nameVal
+                    priority_queue.add(patient_age, patient_name)
+                    patients.append((patient_name, patient_age))
+                    print(f"Added patient: {patient_name} with age {patient_age}")
+                    nameVal = ""
+                    keyVal = ""
+                except ValueError:
+                    print("Invalid age. Please enter an integer.")
 
-                k+=1
-                candyName = f'Candy {k}'
-                candy_names.append(candyName)
-                dispenserStack.push(k)
-                pygame.draw.line(screen, (255, 255, 255), (371, 176), (580, 176), 10) #590
-                pygame.draw.line(screen, (0, 0, 0), (362, 170), (580, 50), 10) 
-                pygame.display.flip()
-                pygame.time.delay(500)
-            else:
-                print("Dispenser is full")
-                # Display message
-                message_text = message_font.render("Dispenser is full!!", True, (255, 0, 0))
-                message_rect = message_text.get_rect(center=(600, 150))
-                screen.blit(message_text, message_rect.topleft)
+            if removemin.draw(screen):
+                try:
+                    removed_patient = priority_queue.remove_min()
+                    print(f"Removed patient with min priority: {removed_patient}")
+                except pq.Empty as e:
+                    print(e)
 
-                pygame.display.flip()
-                pygame.time.delay(500)
-                
-        elif top_img.draw(screen):
-            try:
-                print(dispenserStack.top())
-                top_candy_number = dispenserStack.top()
-                top_candy_name = candy_names[top_candy_number - 1]  # Get the name of the popped candy
-                print("Top candy name:", top_candy_name)
+            if removeany.draw(screen):
+                if patients:
+                    removed_patient = patients.pop()
+                    print(f"Removed patient: {removed_patient}")
+                else:
+                    print("No patients to remove.")
 
-                # Display a message box with the top candy's name
-                message_text = message_font.render("Top Candy: " + top_candy_name, True, (0, 0, 0))
-                message_rect = message_text.get_rect(center=(600, 150))
-                screen.blit(message_text, message_rect.topleft)
+            if len_.draw(screen):
+                print(f"Queue length: {len(priority_queue)}")
 
-                pygame.display.flip()
-                pygame.time.delay(1000) 
-    
-            except stack.Empty:
-                print("Dispenser is empty")
-                # Draw a message box
-                message_text = message_font.render("Dispensor empty!!!", True, (255, 0, 0))
-                message_rect = message_text.get_rect(center=(600, 150))
-                screen.blit(message_text, message_rect.topleft)
+            if is_empty.draw(screen):
+                print(f"Is the queue empty? {priority_queue.is_empty()}")
 
-                pygame.display.flip()
-                pygame.time.delay(1000) 
-            
-        elif len_img.draw(screen):
-            print(len(dispenserStack))
-            candyLength = str(len(dispenserStack))
+        if event.type == pygame.KEYDOWN:
+            if nameRectActive:
+                if event.key == pygame.K_RETURN:
+                    print("Name:", nameVal)
+                    nameVal = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    nameVal = nameVal[:-1]
+                else:
+                    nameVal += event.unicode
 
-            # Draw a message box showing no of candies
-            message_text = message_font.render("Number of Candies: " + candyLength, True, (0, 0, 0))
-            message_rect = message_text.get_rect(center=(600, 150))
-            screen.blit(message_text, message_rect.topleft)
+            if keyRectActive:
+                if event.key == pygame.K_RETURN:
+                    try:
+                        keyVal = int(keyVal)
+                        print("Age:", keyVal)
+                    except ValueError:
+                        print("Invalid age. Please enter an integer.")
+                        keyVal = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    keyVal = keyVal[:-1]
+                else:
+                    keyVal += event.unicode
 
-            pygame.display.flip()
-            pygame.time.delay(1000) 
+    screen.fill((255, 255, 255))
 
-        
-        elif is_empty_img.draw(screen):
-            empty = str(dispenserStack.is_empty())
-            print("Is empty?", empty)
-            
-            # Draw a message box showing whether empty is true or false
-            message_text = message_font.render("Is Dispensor Empty? "+ empty, True, (0, 0, 0))
-            message_rect = message_text.get_rect(center=(600, 150))
-            screen.blit(message_text, message_rect.topleft)
+    input_rect_name = pygame.Rect(150, 50, 140, 32)
+    pygame.draw.rect(screen, (255, 255, 255), input_rect_name)
+    pygame.draw.rect(screen, (0, 0, 0), input_rect_name, 2)
+    text = font.render(nameVal, True, (0, 0, 0))
+    screen.blit(text, (input_rect_name.x + 5, input_rect_name.y + 5))
+    input_rect_name.w = max(100, text.get_width() + 10)
 
-            pygame.display.flip()
-            pygame.time.delay(1000)  
-            
-    num_candies = len(dispenserStack._data)
-                    
-    screen.fill((0, 0, 255))
-    
-    #Draw buttons
-    pop_img.draw(screen) 
-    push_img.draw(screen)  
-    top_img.draw(screen) 
-    len_img.draw(screen) 
-    is_empty_img.draw(screen)
-    
-    #draw rectangle with borders
-    pygame.draw.rect(screen, (255, 255, 255), rect_1) #draw rectangle
-    y = 360 + num_candies*10
-    pygame.draw.line(screen, (0, 0, 0), (365, y), (585, y), 10)
-    pygame.draw.line(screen, (0, 0, 0), (365, 172), (365, 800), 10)
-    pygame.draw.line(screen, (0, 0, 0), (585, 172), (585, 800), 10)
-    pygame.draw.line(screen, (0, 0, 0), (365, 176), (585, 176), 10)
+    input_rect_key = pygame.Rect(150, 90, 140, 32)
+    pygame.draw.rect(screen, (255, 255, 255), input_rect_key)
+    pygame.draw.rect(screen, (0, 0, 0), input_rect_key, 2)
+    text_key = font.render(str(keyVal), True, (0, 0, 0))
+    screen.blit(text_key, (input_rect_key.x + 5, input_rect_key.y + 5))
+    input_rect_key.w = max(100, text_key.get_width() + 10)
 
-    #Spring height and width manipulation
-    spring_max_height = 300  # Adjust this value according to your maximum spring height
-    new_springHeight = spring_max_height - num_candies * 10
-    scale_factor = 0.75 #scale factor
-    new_springWidth = int(springWidth * scale_factor) #new spring width
-    resized_spring = pygame.transform.scale(spring, (new_springWidth, new_springHeight)) #resize spring
-    screen.blit(resized_spring, (280, 332 + num_candies*10)) #blit resized spring
-    
-    #Candy coordinate logic
-    num_columns = 3
-    candy_spacing_x = 61  # Adjust this value according to your spacing preference
-    candy_spacing_y = 61  # Adjust this value according to your spacing preference
-    for i in range(num_candies):
-        row = i // num_columns
-        column = i % num_columns
-        x = CANDY_CENTRE[0] + candy_spacing_x * column
-        y = CANDY_CENTRE[1] - candy_spacing_y * row + num_candies*10
-        centre_of_candy = (x, y) 
-        candy_name = candy_names[i]
-        # print("candy name: ", candy_name)
-        pygame.draw.circle(screen, CANDY_COLOR, centre_of_candy, CANDY_RADIUS)
-        text = font.render(candy_name, True, (0, 0, 0))
-        text_rect = text.get_rect(center=centre_of_candy)  # Position the text below the candy
-        screen.blit(text, text_rect)
+    nameText = message_font.render("Name: ", True, (0, 0, 0))
+    nameRect = nameText.get_rect(center=(110, 70))
+    screen.blit(nameText, nameRect.topleft)
 
-        
-    pygame.display.update() #update screen
+    keyText = message_font.render("Priority: ", True, (0, 0, 0))
+    keyRect = keyText.get_rect(center=(120, 100))
+    screen.blit(keyText, keyRect.topleft)
+
+    # Draw reception
+    screen.blit(reception, (0, 370))
+
+    # Draw patients
+    for i, patient in enumerate(patients):
+        screen.blit(person, (200 + i * 100, 370))
+        patient_text = message_font.render(f"{patient[0]} - {patient[1]}", True, (0, 0, 0))
+        screen.blit(patient_text, (200 + i * 50, 330))
+
+    # Draw buttons
+    add_button.draw(screen)
+    removemin.draw(screen)
+    removeany.draw(screen)
+    len_.draw(screen)
+    is_empty.draw(screen)
+
+    pygame.display.update()  # update screen
     pygame.time.delay(25)
-pygame.quit() #quit pygame 
 
-    
+pygame.quit()  # quit pygame
