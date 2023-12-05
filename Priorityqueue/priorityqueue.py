@@ -81,11 +81,53 @@ class SortedPriorityQueue(PriorityQueueBase):
         """Generate a forward iteration of the elements in sorted order."""
         for item in self._data:
             yield (item._key, item._value)
+
+    def __reversed__(self):
+        """Return a reversed iterator of the elements."""
+        return reversed([(item._key, item._value) for item in self._data])
+            
+    def update_priority(self, old_priority, old_name, new_priority):
+        """Update the priority (key) of a previously entered patient (value)."""
+        walk = self._data.first()
+        while walk is not None:
+            item = walk.element()
+            if item._key == old_priority and item._value == old_name:
+                # Remove the old item
+                self._data.delete(walk)
+                # Add a new item with the updated priority
+                self.add(new_priority, old_name)
+                return
+            walk = self._data.after(walk)
+
+        raise ValueError(f"Patient with priority {old_priority} and name {old_name} not found.")
+
+    def print_contents(self):
+        """Print the contents of the queue."""
+        for item in self._data:
+            print(f"Priority: {item._key}, Name: {item._value}")
+
         
 class Empty(Exception):
     """Error attempting to access an element from an empty container."""
     pass
 
+# priority_queue = SortedPriorityQueue()
+
+# # Add some patients
+# priority_queue.add(3, "Alice")
+# priority_queue.add(1, "Bob")
+# priority_queue.add(2, "Charlie")
+
+# # Print the initial contents
+# print("Initial Contents:")
+# priority_queue.print_contents()
+
+# # Update the priority of a patient
+# priority_queue.update_priority(1, "Bob", 4)
+
+# # Print the updated contents
+# print("\nUpdated Contents:")
+# priority_queue.print_contents()
 # Create a SortedPriorityQueue
 # test_priority_queue.py
 
