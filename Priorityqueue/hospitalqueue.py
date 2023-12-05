@@ -22,7 +22,8 @@ person = pygame.image.load("people.png")
 person = pygame.transform.scale(person, (200, 200))  # resize the people image
 
 # load buttons' images
-addimg = pygame.image.load("button_add-patient.png").convert_alpha()  # load add image
+addimg1 = pygame.image.load("button_add-patient.png").convert_alpha()  # load add image
+addimg = pygame.transform.scale(addimg1, (175, 57))  # resize the add image
 removeminImg = pygame.image.load("button_remove-min.png").convert_alpha()  # load remove min image
 removeanyImg = pygame.image.load("button_remove-any.png").convert_alpha()  # load remove any image
 len_Img = pygame.image.load("button_length.png").convert_alpha()  # load length image
@@ -66,45 +67,104 @@ while running:  # while running is true
                     patient_age = int(keyVal)
                     patient_name = nameVal
                     priority_queue.add(patient_age, patient_name)
-                    patients.append((patient_name, patient_age))
-                    patients.sort(key=lambda x: x[1], reverse=True)  # sort patients by priority
+                    # patients.append((patient_name, patient_age))
+                    # patients.sort(key=lambda x: x[1], reverse=True)  # sort patients by priority
                     print(f"Added patient: {patient_name} with age {patient_age}")
                     nameVal = ""
                     keyVal = ""
                 except ValueError:
                     print("Invalid age. Please enter an integer.")
+                    # Draw a message box showing whether empty is true or false
+                    message_text = message_font.render("Invalid data entered!!!", True, (255, 0, 0))
+                    message_rect = message_text.get_rect(center=(150, 200))
+                    screen.blit(message_text, message_rect.topleft)
+
+                    pygame.display.flip()
+                    pygame.time.delay(1000)  
 
             if removemin.draw(screen):
                 try:
                     removed_patient = priority_queue.remove_min()
                     print(f"Removed patient with min priority: {removed_patient}")
                     # Remove the patient visually
-                    if patients:
-                        patients = sorted(patients, key=lambda x: x[1], reverse=True)
-                        patients.pop()
+                    # if patients:
+                    #     patients = sorted(patients, key=lambda x: x[1], reverse=True)
+                    #     patients.pop()
+                    # Draw a message box showing whether empty is true or false
+                    message_text = message_font.render("Removed ", removed_patient, True, (0, 255, 0))
+                    message_rect = message_text.get_rect(center=(150, 200))
+                    screen.blit(message_text, message_rect.topleft)
+
+                    pygame.display.flip()
+                    pygame.time.delay(1000)  
                 except pq.Empty as e:
                     print(e)
+                    # Draw a message box showing whether empty is true or false
+                    message_text = message_font.render("Queue is empty!!!", True, (255, 0, 0))
+                    message_rect = message_text.get_rect(center=(150, 200))
+                    screen.blit(message_text, message_rect.topleft)
+
+                    pygame.display.flip()
+                    pygame.time.delay(1000)  
 
             if removeany.draw(screen):
                 if patients:
-                    # Remove the specified patient visually and from the queue
                     try:
                         removed_patient_name = nameVal
                         removed_patient_priority = int(keyVal)
                         removed_patient = (removed_patient_name, removed_patient_priority)
-                        patients = [patient for patient in patients if patient != removed_patient]
+                        # patients = [patient for patient in patients if patient != removed_patient]
                         print(f"Removed patient: {removed_patient}")
                         priority_queue.remove(removed_patient_priority, removed_patient_name)
+                        nameVal = ""
+                        keyVal = ""
+                        # Draw a message box showing whether empty is true or false
+                        message_text = message_font.render("Removed patient: "+ removed_patient, True, (0, 0, 0))
+                        message_rect = message_text.get_rect(center=(150, 200))
+                        screen.blit(message_text, message_rect.topleft)
+
+                        pygame.display.flip()
+                        pygame.time.delay(1000)  
                     except ValueError:
                         print("Invalid input. Please enter a valid name and priority.")
+                        nameVal = ""
+                        keyVal = ""
+                        # Draw a message box showing whether empty is true or false
+                        message_text = message_font.render("Invalid input!!!", True, (255, 0, 0))
+                        message_rect = message_text.get_rect(center=(150, 200))
+                        screen.blit(message_text, message_rect.topleft)
+
+                        pygame.display.flip()
+                        pygame.time.delay(1000)  
                 else:
                     print("No patients to remove.")
+                    # Draw a message box showing whether empty is true or false
+                    message_text = message_font.render("No patients to remove!!", True, (255, 0, 0))
+                    message_rect = message_text.get_rect(center=(150, 200))
+                    screen.blit(message_text, message_rect.topleft)
+
+                    pygame.display.flip()
+                    pygame.time.delay(1000) 
 
             if len_.draw(screen):
                 print(f"Queue length: {len(priority_queue)}")
+                # Draw a message box showing whether empty is true or false
+                message_text = message_font.render("Queue length: ", len(priority_queue), True, (0, 0, 0))
+                message_rect = message_text.get_rect(center=(150, 200))
+                screen.blit(message_text, message_rect.topleft)
+
+                pygame.display.flip()
+                pygame.time.delay(1000) 
 
             if is_empty.draw(screen):
                 print(f"Is the queue empty? {priority_queue.is_empty()}")
+                # Draw a message box showing whether empty is true or false
+                message_text = message_font.render("Is the queue empty?", priority_queue.is_empty(), True, (0, 0, 0))
+                message_rect = message_text.get_rect(center=(150, 200))
+                screen.blit(message_text, message_rect.topleft)
+
+                pygame.display.flip()
+                pygame.time.delay(1000) 
 
         if event.type == pygame.KEYDOWN:
             if nameRectActive:
@@ -150,17 +210,18 @@ while running:  # while running is true
     screen.blit(nameText, nameRect.topleft)
 
     keyText = message_font.render("Priority: ", True, (0, 0, 0))
-    keyRect = keyText.get_rect(center=(120, 100))
+    keyRect = keyText.get_rect(center=(100, 100))
     screen.blit(keyText, keyRect.topleft)
 
     # Draw reception
     screen.blit(reception, (0, 370))
 
     # Draw patients
-    for i, patient in enumerate(patients):
+    for i, patient in enumerate(priority_queue):
         screen.blit(person, (200 + i * 100, 400))  # increased spacing
-        patient_text = message_font.render(f"{patient[0]} - {patient[1]}", True, (0, 0, 0))
+        patient_text = message_font.render(f"{patient[1]} - {patient[0]}", True, (0, 0, 0))
         screen.blit(patient_text, (270 + i * 100, 350))  # increased spacing
+        
 
     # Draw buttons
     add_button.draw(screen)

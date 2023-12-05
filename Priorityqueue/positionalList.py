@@ -1,6 +1,6 @@
-import doublylinkedbase as _DoublyLinkedBase
+import doublylinkedbase as dbs
 
-class PositionalList(_DoublyLinkedBase):
+class PositionalList(dbs._DoublyLinkedBase):
     """A sequential container of elements allowing positional access."""
 
     class Position:
