@@ -1,4 +1,4 @@
-import pygame, Stackspring.button as button, Stackspring.stack as stack
+import pygame, button as button, stack as stack
 
 pygame.init() #initialize pygame
 
@@ -18,15 +18,15 @@ pygame.display.set_caption("Candy Dispenser")
 rect_1 = pygame.Rect(365, 182, 220, 600) #create rectangle
 
 #load spring
-spring = pygame.image.load("spring.png") #load spring image
+spring = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/spring.png") #load spring image
 springWidth, springHeight = spring.get_size() #get size of spring
 
 #load buttons' images
-pop_Img = pygame.image.load("button_pop.png").convert_alpha() #load pop image
-push_Img = pygame.image.load("button_push.png").convert_alpha() #load push image
-top_Img = pygame.image.load("button_top.png").convert_alpha() #load top image
-len_Img = pygame.image.load("button_length.png").convert_alpha() #load len image
-is_empty_Img = pygame.image.load("button_is-empty.png").convert_alpha() #load is empty image
+pop_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/button_pop.png").convert_alpha() #load pop image
+push_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/button_push.png").convert_alpha() #load push image
+top_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/button_top.png").convert_alpha() #load top image
+len_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/button_length.png").convert_alpha() #load len image
+is_empty_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Stackspring/assets/button_is-empty.png").convert_alpha() #load is empty image
         
 #create button instances
 pop_img = button.Button(50, 50, pop_Img)
