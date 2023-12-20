@@ -64,6 +64,7 @@ while running:  # while running is true
         if event.type == pygame.MOUSEBUTTONDOWN:
             nameRectActive = input_rect_name.collidepoint(event.pos)
             keyRectActive = input_rect_key.collidepoint(event.pos)
+            newPriorityRectActive = input_rect_new_priority.collidepoint(event.pos)
 
             if add_button.draw(screen):
                 try:
@@ -95,8 +96,7 @@ while running:  # while running is true
 
                     pygame.display.flip()
                     pygame.time.delay(1000)  
-                except pq.Empty as e:
-                    print(e)
+                except ValueError:
                     # Draw a message box showing whether empty is true or false
                     message_text = message_font.render("Queue is empty!!!", True, (255, 0, 0))
                     message_rect = message_text.get_rect(center=(150, 200))
@@ -110,19 +110,23 @@ while running:  # while running is true
                     removed_patient_name = nameVal
                     removed_patient_priority = int(keyVal)
                     removed_patient = (removed_patient_name, removed_patient_priority)
-                    # patients = [patient for patient in patients if patient != removed_patient]
-                    print(f"Removed patient: {removed_patient}")
-                    priority_queue.remove(removed_patient_priority, removed_patient_name)
-                    priority_queue.print_contents()
-                    nameVal = ""
-                    keyVal = ""
-                    # Draw a message box showing whether empty is true or false
-                    message_text = message_font.render("Removed patient: "+ removed_patient[0], True, (0, 0, 0))
-                    message_rect = message_text.get_rect(center=(150, 200))
-                    screen.blit(message_text, message_rect.topleft)
 
-                    pygame.display.flip()
-                    pygame.time.delay(1000)  
+                    # Get the locator for the patient
+                    locator = priority_queue.get_locator_for_key(removed_patient_priority)
+
+                    if locator:
+                        print(f"Removed patient: {removed_patient}")
+                        priority_queue.remove(locator)
+                        priority_queue.print_contents()
+                        nameVal = ""
+                        keyVal = ""
+                        # Draw a message box showing whether empty is true or false
+                        message_text = message_font.render("Removed patient: "+ removed_patient[0], True, (0, 0, 0))
+                        message_rect = message_text.get_rect(center=(150, 200))
+                        screen.blit(message_text, message_rect.topleft)
+
+                        pygame.display.flip()
+                        pygame.time.delay(1000)  
                 except ValueError:
                     print("Invalid input. Please enter a valid name and priority.")
                     nameVal = ""
@@ -160,7 +164,7 @@ while running:  # while running is true
                 pr_empty = str(priority_queue.is_empty())
                 # Draw a message box showing whether empty is true or false
                 message_text = message_font.render("Is the queue empty?" + pr_empty, True, (0, 0, 0))
-                message_rect = message_text.get_rect(center=(150, 200))
+                message_rect = message_text.get_rect(center=(160, 200))
                 screen.blit(message_text, message_rect.topleft)
 
                 pygame.display.flip()
@@ -168,30 +172,27 @@ while running:  # while running is true
                 
             if update_priority.draw(screen):
                 try:
-                    # patient_name = nameVal
-                    # patient_priority = int(keyVal)
-                    # priority_queue.update_priority(patient_priority, patient_name, patient_priority)
-                    # priority_queue.print_contents()
-                    # nameVal = ""
-                    # keyVal = ""
-                    input_rect_new_priority = pygame.Rect(150, 130, 140, 32)
-                    pygame.draw.rect(screen, (255, 255, 255), input_rect_new_priority)
-                    pygame.draw.rect(screen, (0, 0, 0), input_rect_new_priority, 2)
-                    text_new_priority = font.render(str(newPriorityVal), True, (0, 0, 0))
-                    screen.blit(text_new_priority, (input_rect_new_priority.x + 5, input_rect_new_priority.y + 5))
-                    input_rect_new_priority.w = max(100, text_new_priority.get_width() + 10)
-
-                    newPriorityText = message_font.render("New Priority: ", True, (0, 0, 0))
-                    newPriorityRect = newPriorityText.get_rect(center=(100, 150))
-                    screen.blit(newPriorityText, newPriorityRect.topleft)
-                    newPriorityVal = ""  # Clear the new priority field
-                    newPriorityRectActive = True  # Activate the new priority field
+                    patient_name = nameVal
+                    patient_priority = int(keyVal)
+                    locator = priority_queue.get_locator_for_index(int(newPriorityVal))
+                    priority_queue.update(locator, patient_priority, patient_name)
+                    priority_queue.print_contents()
+                    nameVal = ""
+                    keyVal = ""
+                    newPriorityVal = ""
+                    # newPriorityRectActive = True  # Activate the new priority field
                 except ValueError:
                     print("Invalid input. Please enter a valid name and priority.")
                     nameVal = ""
                     keyVal = ""
                     newPriorityVal = ""
-                    newPriorityRectActive = False
+                    # Draw a message box showing whether empty is true or false
+                    message_text = message_font.render("Invalid input!!!", True, (255, 0, 0))
+                    message_rect = message_text.get_rect(center=(150, 200))
+                    screen.blit(message_text, message_rect.topleft)
+
+                    pygame.display.flip()
+                    pygame.time.delay(1000)  
 
         if event.type == pygame.KEYDOWN:
             if nameRectActive:
@@ -216,25 +217,18 @@ while running:  # while running is true
                 else:
                     keyVal += event.unicode
                     
-                if newPriorityRectActive:
-                    if event.key == pygame.K_RETURN:
-                        try:
-                            new_priority = int(newPriorityVal)
-                            print("New Priority:", new_priority)
-                            patient_name = nameVal
-                            patient_priority = int(keyVal)
-                            priority_queue.update_priority(patient_priority, patient_name, new_priority)
-                            priority_queue.print_contents()
-                            nameVal = ""
-                            newPriorityVal = ""
-                            newPriorityRectActive = False
-                        except ValueError:
-                            print("Invalid priority. Please enter an integer.")
-                            newPriorityVal = ""
-                    elif event.key == pygame.K_BACKSPACE:
-                        newPriorityVal = newPriorityVal[:-1]
-                    else:
-                        newPriorityVal += event.unicode
+            if newPriorityRectActive:
+                if event.key == pygame.K_RETURN:
+                    try:
+                        new_priority = int(newPriorityVal)
+                        print("New Priority:", new_priority)
+                    except ValueError:
+                        print("Invalid loc. Please enter an integer.")
+                        newPriorityVal = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    newPriorityVal = newPriorityVal[:-1]
+                else:
+                    newPriorityVal += event.unicode
 
     screen.fill((255, 255, 255))
 
@@ -252,12 +246,12 @@ while running:  # while running is true
     screen.blit(text_key, (input_rect_key.x + 5, input_rect_key.y + 5))
     input_rect_key.w = max(100, text_key.get_width() + 10)
     
-    # input_rect_new_priority = pygame.Rect(150, 130, 140, 32)
-    # pygame.draw.rect(screen, (255, 255, 255), input_rect_new_priority)
-    # pygame.draw.rect(screen, (0, 0, 0), input_rect_new_priority, 2)
-    # text_new_priority = font.render(str(newPriorityVal), True, (0, 0, 0))
-    # screen.blit(text_new_priority, (input_rect_new_priority.x + 5, input_rect_new_priority.y + 5))
-    # input_rect_new_priority.w = max(100, text_new_priority.get_width() + 10)
+    input_rect_new_priority = pygame.Rect(150, 130, 140, 32)
+    pygame.draw.rect(screen, (255, 255, 255), input_rect_new_priority)
+    pygame.draw.rect(screen, (0, 0, 0), input_rect_new_priority, 2)
+    text_new_priority = font.render(str(newPriorityVal), True, (0, 0, 0))
+    screen.blit(text_new_priority, (input_rect_new_priority.x + 5, input_rect_new_priority.y + 5))
+    input_rect_new_priority.w = max(100, text_new_priority.get_width() + 10)
 
     # newPriorityText = message_font.render("New Priority: ", True, (0, 0, 0))
     # newPriorityRect = newPriorityText.get_rect(center=(100, 150))
@@ -267,7 +261,7 @@ while running:  # while running is true
     nameRect = nameText.get_rect(center=(110, 70))
     screen.blit(nameText, nameRect.topleft)
 
-    keyText = message_font.render("Priority: ", True, (0, 0, 0))
+    keyText = message_font.render("Age: ", True, (0, 0, 0))
     keyRect = keyText.get_rect(center=(100, 100))
     screen.blit(keyText, keyRect.topleft)
 
@@ -275,10 +269,16 @@ while running:  # while running is true
     screen.blit(reception, (0, 370))
 
     # Draw patients
-    for i, patient in enumerate(reversed(priority_queue)):
+    # for i, patient in enumerate(reversed(priority_queue)):
+    #     screen.blit(person, (200 + i * 100, 400))  # increased spacing
+    #     patient_text = message_font.render(f"{patient._value} - {patient._key}", True, (0, 0, 0))
+    #     screen.blit(patient_text, (270 + i * 100, 350))  # increased spacing
+    # Draw patients in descending order of their keys
+    for i, patient in enumerate(reversed(sorted(priority_queue._data, key=lambda x: x._key))):
         screen.blit(person, (200 + i * 100, 400))  # increased spacing
-        patient_text = message_font.render(f"{patient[1]} - {patient[0]}", True, (0, 0, 0))
+        patient_text = message_font.render(f"{patient._value} - {patient._key}", True, (0, 0, 0))
         screen.blit(patient_text, (270 + i * 100, 350))  # increased spacing
+
         
 
     # Draw buttons
