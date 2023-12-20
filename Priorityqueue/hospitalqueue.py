@@ -28,7 +28,7 @@ removeminImg = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priority
 removeanyImg = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priorityqueue/assets/button_remove-any.png").convert_alpha()  # load remove any image
 len_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priorityqueue/assets/button_length.png").convert_alpha()  # load length image
 is_empty_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priorityqueue/assets/button_is-empty.png").convert_alpha()  # load is empty image
-update_priority_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priorityqueue/assets/button_update-priority.png").convert_alpha()  # load update priority image
+update_priority_Img = pygame.image.load("/home/keith/Documents/Code/ics2301Ass/Priorityqueue/assets/button_update.png").convert_alpha()  # load update priority image
 # update_priority_Img = pygame.transform.scale(update_priority_Img1, (175, 57))  # resize the update priority image
 
 # create button instances
